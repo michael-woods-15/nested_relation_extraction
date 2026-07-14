@@ -1,0 +1,112 @@
+
+##################
+# Core relations #
+##################
+
+effect: 
+    desc: One thing causing another thing to happen
+    args: [cause, theme]
+    arg_types: {cause: [effect, gene_protein, chemical, disease, expression, rna_expression, protein_expression, amplification, increase, decrease, phosphorylated, dephosphorylated, methylated, demethylated, phosphorylation, dephosphorylation, ubiquitination, deubiquitination, methylation, demethylation], theme: [gene_protein, disease, expression, rna_expression, protein_expression, increase, decrease, phosphorylation, dephosphorylation, ubiquitination, deubiquitination, methylation, demethylation]}
+
+correlation: 
+    desc: One thing being associated or correlating with another (but without explicit mention of causation)
+    args: [cause, theme]
+    arg_types: {cause: [effect, gene_protein, chemical, disease, expression, rna_expression, protein_expression, amplification, increase, decrease, phosphorylated, dephosphorylated, methylated, demethylated, phosphorylation, dephosphorylation, ubiquitination, deubiquitination, methylation, demethylation], theme: [gene_protein, disease, expression, rna_expression, protein_expression, increase, decrease, phosphorylation, dephosphorylation, ubiquitination, deubiquitination, methylation, demethylation]}
+
+increase:
+    desc: A higher level or activity of something (optionally in comparison to something)
+    args: [variable]
+    arg_types: {variable: [effect, gene_protein, chemical, disease, expression, rna_expression, protein_expression, production, bioactivity]}
+
+decrease: 
+    desc: A lower level or activity of something (optionally in comparison to something)
+    args: [variable]
+    arg_types: {variable: [effect, gene_protein, chemical, disease, expression, rna_expression, protein_expression, production, bioactivity]}
+
+###############
+# Omic events #
+###############
+
+rna_expression: 
+    desc: The gene expression or RNA levels of a gene
+    args: [gene_protein]
+
+protein_expression: 
+    desc: The protein expression or protein levels of a gene/protein
+    args: [gene_protein]
+
+expression: 
+    desc: The expression of a gene/protein (when it is unclear if it is RNA/protein expression)
+    annotation_guide: Annotate only with an explicit mention of `expression` where it is unclear if it is RNA/protein
+    args: [gene_protein]
+
+amplification: 
+    desc: The amplification (i.e. additional copies) of a gene or span of DNA
+    args: [gene_protein]
+
+deletion:  
+    desc: The deletion (i.e. zero copies) of a gene or span of DNA
+    args: [gene_protein]
+    
+mutation:  
+    desc: The mutation of a gene/protein or larger region
+    args: [gene_protein]
+
+production:
+    desc: The creation (through some process) of a chemical/metabolite/protein/etc
+    args: [biomolecule]
+
+bioactivity: 
+    desc: The level of function of a gene/protein/etc
+    args: [biomolecule]
+
+phosphorylation: 
+    desc: The phosphorylation of a gene/protein
+    args: [gene_protein]
+    optional: [protein_coordinate]
+
+phosphorylated: 
+    desc: A phosphorylated gene/protein
+    args: [gene_protein]
+    optional: [protein_coordinate]
+
+dephosphorylation: 
+    desc: The dephosphorylation of a gene/protein
+    args: [gene_protein]
+    optional: [protein_location]
+
+dephosphorylated: 
+    desc: A dephosphorylated gene/protein
+    args: [gene_protein]
+    optional: [protein_location]
+
+ubiquitination: 
+    desc: The ubiquitination of a gene/protein
+    args: [gene_protein]
+
+deubiquitination: 
+    desc: The deubiquitination of a gene/protein
+    args: [gene_protein]
+
+methylation: 
+    desc: The methylation of a gene/protein
+    args: [gene_protein]
+
+methylated: 
+    desc: A methylated gene/protein
+    args: [gene_protein]
+
+demethylation: 
+    desc: The demethylation of a gene/protein
+    args: [gene_protein]
+
+demethylated: 
+    desc: A demethylated gene/protein
+    args: [gene_protein]
+
+binding: 
+    desc: The physical binding of biomolecules
+    args: [partner1, partner2]
+    optional: [partner3]
+    arg_types: {partner1: [biomolecule], partner2: [biomolecule], partner3: [biomolecule]}
+
