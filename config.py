@@ -21,3 +21,14 @@ MAX_LENGTH = 512
 SEED = 42
 TRAIN_FRAC = 0.8   # fraction of data used for training
 VAL_FRAC = 0.9     # cumulative fraction: train+val, remainder is test
+
+# --- Training hyperparameters -----------------------------------------------
+OUTPUT_DIR = "./t5-relation-extraction"
+LEARNING_RATE = 3e-4
+TRAIN_BATCH_SIZE = 16
+EVAL_BATCH_SIZE = 16
+NUM_EPOCHS = 10
+LOGGING_STEPS = 50
+GENERATION_MAX_LENGTH = 512
+METRIC_FOR_BEST_MODEL = "bin_decomp_f1_score"
+GREATER_IS_BETTER = True
