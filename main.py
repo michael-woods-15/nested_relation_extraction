@@ -1,8 +1,11 @@
+import json
+from datetime import datetime
+
 import config
 from data.dataset import load_and_prepare_datasets
 from metrics.evaluate import make_compute_metrics
-from training.model import load_tokenizer_and_model
-from training.train import build_trainer
+from training.t5_model import load_tokenizer_and_model
+from training.t5_train import build_trainer
  
  
 def main():
@@ -42,7 +45,11 @@ def main():
     )
  
     trainer.train()
-    trainer.evaluate()
+    output = trainer.evaluate()
+
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    with open(f"results/{config.MODEL_NAME}_{timestamp}", "w") as f:
+        json.dump(output, f, indent=2)
  
  
 if __name__ == "__main__":
