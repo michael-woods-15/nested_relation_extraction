@@ -113,7 +113,7 @@ class OptunaHyperparameterSearch:
         print(f"\n{'='*80}")
         print("Starting Optuna Hyperparameter Search")
         print(f"Model Name: {self.model_name}")
-        print(f"Random seed: {self.random_seed}")
+        print(f"Random seed: {self.seed}")
         print(f"\n{'='*80}")
 
         self.study.optimize(
@@ -131,7 +131,7 @@ class OptunaHyperparameterSearch:
             'best_value': self.study.best_value,
             'best_params': self.study.best_params,
             'best_trial_number': self.study.best_trial.number,
-            'random_seed': self.random_seed,
+            'seed': self.seed,
             'datetime_start': self.study.trials[0].datetime_start.isoformat() if self.study.trials else None,
             'datetime_complete': datetime.now().isoformat()
         }
