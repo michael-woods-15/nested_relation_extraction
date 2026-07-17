@@ -18,7 +18,7 @@ def select_precision():
  
 def build_trainer(model, tokenizer, tokenized_datasets, compute_metrics, *, output_dir, learning_rate, train_batch_size,
     eval_batch_size, num_epochs, generation_max_length, logging_steps, metric_for_best_model, greater_is_better, 
-    bf16=None, fp16=None):
+    bf16=None, fp16=None, callbacks=None):
     
     if bf16 is None and fp16 is None:
         precision = select_precision()
@@ -54,4 +54,5 @@ def build_trainer(model, tokenizer, tokenized_datasets, compute_metrics, *, outp
         eval_dataset=tokenized_datasets["validation"],
         data_collator=data_collator,
         compute_metrics=compute_metrics,
+        callbacks=callbacks
     )
