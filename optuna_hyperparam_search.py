@@ -32,13 +32,14 @@ class OptunaPruningCallback(TrainerCallback):
 class OptunaHyperparameterSearch:
     def __init__(self, model_name, n_trials, seed=42):
         self.model_name = model_name
+        self.safe_model_name = model_name.replace("/", ",")
         self.n_trials = n_trials
         self.seed = seed
         self.metric_key = f"eval_{config.METRIC_FOR_BEST_MODEL}"
 
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        self.study_name = f'{model_name}_optimization_{timestamp}'
-        storage_name = f"sqlite:///{model_name}_optuna_study.db"
+        self.study_name = f'{self.safe_model_name}_optimization_{timestamp}'
+        storage_name = f"sqlite:///{self.safe_model_name}_optuna_study.db"
 
         self.tokenizer, _ = load_tokenizer_and_model(self.model_name)
  
@@ -136,7 +137,7 @@ class OptunaHyperparameterSearch:
             'datetime_complete': datetime.now().isoformat()
         }
         
-        with open(self.run_dir / f'{self.model_name}_study_summary.json', 'w') as f:
+        with open(f'{self.safe_model_name}_study_summary.json', 'w') as f:
             json.dump(study_stats, f, indent=2)
 
         trials_data = []
@@ -151,7 +152,7 @@ class OptunaHyperparameterSearch:
                 }
                 trials_data.append(trial_dict)
         
-        with open(f'{self.model_name}_all_trials.json', 'w') as f:
+        with open(f'{self.safe_model_name}_all_trials.json', 'w') as f:
             json.dump(trials_data, f, indent=2)
 
 
