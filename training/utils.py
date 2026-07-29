@@ -1,0 +1,41 @@
+import torch
+
+def get_device():
+    return "cuda" if torch.cuda.is_available() else "cpu"
+
+SPECIAL_TOKENS = [
+    '[E1]', '[/E1]',
+    '[E2]', '[/E2]',
+    '[EFFECT]', '[/EFFECT]',
+    '[CORRELATION]', '[/CORRELATION]',
+    '[INCREASE]', '[/INCREASE]',
+    '[DECREASE]', '[/DECREASE]',
+
+    '[RNA_EXPRESSION]', '[/RNA_EXPRESSION]',
+    '[PROTEIN_EXPRESSION]', '[/PROTEIN_EXPRESSION]',
+    '[EXPRESSION]', '[/EXPRESSION]',
+    '[AMPLIFICATION]', '[/AMPLIFICATION]',
+    #'[DELETION]', '[/DELETION]',
+    #'[MUTATION]', '[/MUTATION]',
+    '[PRODUCTION]', '[/PRODUCTION]',
+    '[BIOACTIVITY]', '[/BIOACTIVITY]',
+    '[PHOSPHORYLATION]', '[/PHOSPHORYLATION]',
+    '[PHOSPHORYLATED]', '[/PHOSPHORYLATED]',
+    '[DEPHOSPHORYLATION]', '[/DEPHOSPHORYLATION]',
+    '[DEPHOSPHORYLATED]', '[/DEPHOSPHORYLATED]',
+    '[UBIQUITINATION]', '[/UBIQUITINATION]',
+    '[DEUBIQUITINATION]', '[/DEUBIQUITINATION]',
+    '[METHYLATION]', '[/METHYLATION]',
+    '[METHYLATED]', '[/METHYLATED]',
+    '[DEMETHYLATION]', '[/DEMETHYLATION]',
+    '[DEMETHYLATED]', '[/DEMETHYLATED]',
+    #'[BINDING]', '[/BINDING]',
+
+    '[CAUSE]', '[/CAUSE]',
+    '[THEME]', '[/THEME]',
+    '[VARIABLE]', '[/VARIABLE]',
+    '[GENE_PROTEIN]', '[/GENE_PROTEIN]',
+    '[BIOMOLECULE]', '[/BIOMOLECULE]',
+    #'[PARTNER1]', '[/PARTNER2]',
+]
+

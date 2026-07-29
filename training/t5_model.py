@@ -1,9 +1,6 @@
 import torch
 from transformers import T5ForConditionalGeneration, T5Tokenizer
- 
- 
-def get_device():
-    return "cuda" if torch.cuda.is_available() else "cpu"
+from training.utils import get_device
  
  
 def load_tokenizer_and_model(model_name, device=None):
