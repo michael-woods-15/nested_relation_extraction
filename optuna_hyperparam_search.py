@@ -7,7 +7,7 @@ import torch
 from optuna.trial import TrialState
 from transformers import TrainerCallback
  
-import config
+import config_t5
 from data.dataset import load_and_prepare_datasets
 from metrics.evaluate import make_compute_metrics
 from training.t5_model import load_tokenizer_and_model
@@ -35,7 +35,7 @@ class OptunaHyperparameterSearch:
         self.safe_model_name = model_name.replace("/", ",")
         self.n_trials = n_trials
         self.seed = seed
-        self.metric_key = f"eval_{config.METRIC_FOR_BEST_MODEL}"
+        self.metric_key = f"eval_{config_t5.METRIC_FOR_BEST_MODEL}"
 
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         self.study_name = f'{self.safe_model_name}_optimization_{timestamp}'
@@ -44,20 +44,20 @@ class OptunaHyperparameterSearch:
         self.tokenizer, _ = load_tokenizer_and_model(self.model_name)
  
         self.tokenized_datasets = load_and_prepare_datasets(
-            config.DATASET_PATH,
+            config_t5.DATASET_PATH,
             self.tokenizer,
-            config.TASK_PREFIX,
-            config.MAX_LENGTH,
-            config.SEED,
-            config.TRAIN_FRAC,
-            config.VAL_FRAC,
+            config_t5.TASK_PREFIX,
+            config_t5.MAX_LENGTH,
+            config_t5.SEED,
+            config_t5.TRAIN_FRAC,
+            config_t5.VAL_FRAC,
         )
  
         self.compute_metrics = make_compute_metrics(
             self.tokenizer,
-            config.SCHEMA_PATH,
-            config.TERMS_PATH,
-            config.ROOT_LABELS,
+            config_t5.SCHEMA_PATH,
+            config_t5.TERMS_PATH,
+            config_t5.ROOT_LABELS,
         )
 
         pruner = optuna.pruners.MedianPruner(
@@ -89,15 +89,15 @@ class OptunaHyperparameterSearch:
                 self.tokenizer,
                 self.tokenized_datasets,
                 self.compute_metrics,
-                output_dir=config.OUTPUT_DIR,
+                output_dir=config_t5.OUTPUT_DIR,
                 learning_rate=trial_lr,
                 train_batch_size=trial_batch_size,
                 eval_batch_size=trial_batch_size,
-                num_epochs=config.NUM_EPOCHS,
-                generation_max_length=config.GENERATION_MAX_LENGTH,
-                logging_steps=config.LOGGING_STEPS,
-                metric_for_best_model=config.METRIC_FOR_BEST_MODEL,
-                greater_is_better=config.GREATER_IS_BETTER,
+                num_epochs=config_t5.NUM_EPOCHS,
+                generation_max_length=config_t5.GENERATION_MAX_LENGTH,
+                logging_steps=config_t5.LOGGING_STEPS,
+                metric_for_best_model=config_t5.METRIC_FOR_BEST_MODEL,
+                greater_is_better=config_t5.GREATER_IS_BETTER,
                 callbacks=[pruning_callback]
             )
         
