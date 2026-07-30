@@ -1,5 +1,5 @@
 import json
-from datasets import Dataset
+from datasets import DatasetDict
 
 from data.bert_data_creation import generate_training_examples
 from data.relation_dataset import RelationDataset
@@ -63,17 +63,17 @@ def tokenize_dataset(dataset, tokenizer, label2id, max_length=256):
     )
 
 
-def prepare_bert_dataset(split_paths, tokenizer, label2id, max_length=256):
+def prepare_bert_dataset(split_paths, tokenizer, label2id, max_length=512):
     """Run the BERT-specific pipeline: load split files -> expand each raw
-    nested relation into flat text/label examples -> wrap in `RelationDataset`.
+    nested relation into flat text/label examples -> tokenize.
 
     `split_paths` is the dict of split name -> file path returned by
-    `data.splitting.prepare_data_splits` (or `write_splits`). Returns a dict
-    of split name -> `RelationDataset`, ready to hand to `Trainer`.
+    `data.splitting.prepare_data_splits` (or `write_splits`). Returns a
+    tokenized `DatasetDict`, ready to hand to `Trainer`.
     """
-    datasets = {}
+    dataset_dict = {}
     for name, path in split_paths.items():
         relations = load_split(path)
         examples = build_bert_examples(relations)
-        datasets[name] = RelationDataset(examples, tokenizer, label2id, max_length)
-    return datasets
+        dataset_dict[name] = tokenize_dataset(make_hf_dataset(examples), tokenizer, label2id, max_length)
+    return DatasetDict(dataset_dict)

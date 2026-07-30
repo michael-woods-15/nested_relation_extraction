@@ -1,16 +1,18 @@
 import json
 from datetime import datetime
 
-import config_t5 as config
-from data.t5_dataset import load_and_prepare_datasets
-from data.utils import prepare_data_splits
-from metrics.evaluate import make_compute_metrics
-from training.t5_model import load_tokenizer_and_model
-from training.t5_train import build_trainer
+import config_bert as config
+from training.bert_classifier import load_tokenizer_and_classifier
+from training.bert_train import build_trainer
+from data.bert_dataset import prepare_bert_dataset
+from data.utils import prepare_data_splits, get_labels
+
  
  
 def main():
-    tokenizer, model = load_tokenizer_and_model(config.MODEL_NAME)
+    tokenizer, classifier = load_tokenizer_and_classifier(config.MODEL_NAME)
+
+    label2id, id2label = get_labels()
 
     splits, split_paths = prepare_data_splits(
         config.DATASET_PATH,
@@ -20,34 +22,27 @@ def main():
         config.VAL_FRAC
     )
  
-    tokenized_datasets = load_and_prepare_datasets(
+    tokenized_datasets = prepare_bert_dataset(
         split_paths,
         tokenizer,
-        config.TASK_PREFIX,
-        config.MAX_LENGTH,
+        label2id,
+        config.MAX_LENGTH
     )
- 
-    compute_metrics = make_compute_metrics(
-        tokenizer,
-        config.SCHEMA_PATH,
-        config.TERMS_PATH,
-        config.ROOT_LABELS,
-    )
- 
+
     trainer = build_trainer(
-        model,
+        classifier,
         tokenizer,
         tokenized_datasets,
-        compute_metrics,
         output_dir=config.OUTPUT_DIR,
-        learning_rate=config.LEARNING_RATE,
+        epochs=config.NUM_EPOCHS,
         train_batch_size=config.TRAIN_BATCH_SIZE,
         eval_batch_size=config.EVAL_BATCH_SIZE,
-        num_epochs=config.NUM_EPOCHS,
-        generation_max_length=config.GENERATION_MAX_LENGTH,
+        learning_rate=config.LEARNING_RATE,
+        weight_decay=config.WEIGHT_DECAY,
+        warmup_ratio=config.WARMUP_RATIO,
         logging_steps=config.LOGGING_STEPS,
         metric_for_best_model=config.METRIC_FOR_BEST_MODEL,
-        greater_is_better=config.GREATER_IS_BETTER,
+        greater_is_better=config.GREATER_IS_BETTER
     )
  
     trainer.train()

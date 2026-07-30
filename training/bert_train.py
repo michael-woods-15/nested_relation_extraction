@@ -19,7 +19,7 @@ def compute_metrics(eval_pred):
         "macro_recall": recall,
     }
 
-def build_trainer(classifier, tokenizer, train_dataset, val_dataset, *, output_dir, epochs, train_batch_size,
+def build_trainer(classifier, tokenizer, tokenized_datasets, *, output_dir, epochs, train_batch_size,
                   eval_batch_size, learning_rate, weight_decay, warmup_ratio, logging_steps, metric_for_best_model,
                   greater_is_better):
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
@@ -44,8 +44,8 @@ def build_trainer(classifier, tokenizer, train_dataset, val_dataset, *, output_d
     return Trainer(
         model=classifier,
         args=training_args,
-        train_dataset=train_dataset,
-        eval_dataset=val_dataset,
+        train_dataset=tokenized_datasets["train"],
+        eval_dataset=tokenized_datasets["validation"],
         data_collator=data_collator,
         compute_metrics=compute_metrics,
     )

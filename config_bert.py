@@ -4,13 +4,15 @@ import os
 # Raw data lives in its own top-level `resources/` directory, kept separate
 # from the `data/` *package* (which holds data-handling code, not data files).
 RESOURCES_DIR = "resources"
+SPLITS_DIR = "splits"
 
 DATASET_PATH = os.path.join(RESOURCES_DIR, "nested_relations_dataset_v2.json")
 SCHEMA_PATH = os.path.join(RESOURCES_DIR, "relation_schema.yml")
 TERMS_PATH = os.path.join(RESOURCES_DIR, "terms.json")
 
 # --- Model -----------------------------------------------------------------
-MODEL_NAME = "t5-small"
+MODEL_NAME = "bert-base-cased"
+MAX_LENGTH = 512
 
 # --- Data splitting / reproducibility --------------------------------------
 SEED = 42

@@ -4,7 +4,7 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 from training.utils import get_device, SPECIAL_TOKENS
 from data.utils import get_num_labels
 
-def load_tokenizer_and_mo(model_name, device=None):
+def load_tokenizer_and_classifier(model_name, device=None):
     """Load the BERT tokenizer + model and move the model to `device`.
  
     `device` defaults to CUDA if available, else CPU.
