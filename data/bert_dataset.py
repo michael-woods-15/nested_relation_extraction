@@ -1,4 +1,5 @@
 import json
+from datasets import Dataset
 
 from data.bert_data_creation import generate_training_examples
 from data.relation_dataset import RelationDataset
@@ -29,6 +30,37 @@ def write_bert_examples(examples, path):
     """
     with open(path, "w") as f:
         json.dump(examples, f, indent=2)
+
+
+def make_hf_dataset(examples):
+    """Wrap a list of {"text", "label"} dicts into a single HF `Dataset`."""
+    return Dataset.from_dict({
+        "text": [ex["text"] for ex in examples],
+        "label": [ex["label"] for ex in examples],
+    })
+
+
+def tokenize_dataset(dataset, tokenizer, label2id, max_length=256):
+    """Tokenize a raw (text, label) `Dataset` for classification training.
+
+    Converts string labels to ints via `label2id`, leaving padding to the
+    data collator at training time.
+    """
+
+    def preprocess_function(batch):
+        encodings = tokenizer(
+            batch["text"],
+            truncation=True,
+            max_length=max_length,
+        )
+        encodings["labels"] = [label2id[label] for label in batch["label"]]
+        return encodings
+
+    return dataset.map(
+        preprocess_function,
+        batched=True,
+        remove_columns=["text", "label"],
+    )
 
 
 def prepare_bert_dataset(split_paths, tokenizer, label2id, max_length=256):
