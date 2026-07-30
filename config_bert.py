@@ -28,3 +28,34 @@ NUM_EPOCHS = 10
 LOGGING_STEPS = 50
 METRIC_FOR_BEST_MODEL = "macro_f1"
 GREATER_IS_BETTER = True
+
+
+# --- Relation Types for Labels ----------------------------------------------
+ONE_ARG_RELS = [
+    'increase',
+    'decrease',
+    'rna_expression',
+    'protein_expression',
+    'expression',
+    'amplification',
+    #'deletion',
+    #'mutation',
+    'production',
+    'bioactivity',
+    'phosphorylation',
+    'phosphorylated',
+    'dephosphorylation',
+    'dephosphorylated',
+    'ubiquitination',
+    'deubiquitination',
+    'methylation',
+    'methylated',
+    'demethylation',
+    'demethylated',
+]
+
+TWO_ARG_RELS = [
+    'effect',
+    'correlation',
+    #'binding'
+]
