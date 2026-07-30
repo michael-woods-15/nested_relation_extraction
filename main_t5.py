@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+import os
 
 import config_t5 as config
 from data.t5_dataset import load_and_prepare_datasets
@@ -53,8 +54,9 @@ def main():
     trainer.train()
     output = trainer.evaluate()
 
+    os.makedirs("results", exist_ok=True)
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    with open(f"results/{config.MODEL_NAME}_{timestamp}", "w") as f:
+    with open(f"results/{config.MODEL_NAME}_{timestamp}.json", "w") as f:
         json.dump(output, f, indent=2)
  
  

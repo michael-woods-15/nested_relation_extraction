@@ -35,7 +35,9 @@ def make_dataset_dict(split_paths, task_prefix):
     for name, path in split_paths.items():
         relations = load_split(path)
         inputs, targets = build_examples(relations, task_prefix)
+        print(f"{name}: {len(relations)} relations -> {len(inputs)} examples")
         dataset_dict[name] = make_hf_dataset(inputs, targets)
+        print(f"{name}: dataset_dict length = {len(dataset_dict[name])}")
     return DatasetDict(dataset_dict)
 
 

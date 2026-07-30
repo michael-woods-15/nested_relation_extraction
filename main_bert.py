@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+import os
 
 import config_bert as config
 from training.bert_classifier import load_tokenizer_and_classifier
@@ -48,8 +49,9 @@ def main():
     trainer.train()
     output = trainer.evaluate()
 
+    os.makedirs("results", exist_ok=True)
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    with open(f"results/{config.MODEL_NAME}_{timestamp}", "w") as f:
+    with open(f"results/{config.MODEL_NAME}_{timestamp}.json", "w") as f:
         json.dump(output, f, indent=2)
  
  

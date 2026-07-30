@@ -1,6 +1,7 @@
 import torch
 from transformers import DataCollatorWithPadding, TrainingArguments, Trainer
 from sklearn.metrics import precision_recall_fscore_support, accuracy_score
+import numpy as np
 
 
 def compute_metrics(eval_pred):

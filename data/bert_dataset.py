@@ -1,8 +1,7 @@
 import json
-from datasets import DatasetDict
+from datasets import Dataset, DatasetDict
 
 from data.bert_data_creation import generate_training_examples
-from data.relation_dataset import RelationDataset
 
 
 def load_split(path):
@@ -75,5 +74,7 @@ def prepare_bert_dataset(split_paths, tokenizer, label2id, max_length=512):
     for name, path in split_paths.items():
         relations = load_split(path)
         examples = build_bert_examples(relations)
+        print(f"{name}: {len(relations)} relations -> {len(examples)} examples")
         dataset_dict[name] = tokenize_dataset(make_hf_dataset(examples), tokenizer, label2id, max_length)
+        print(f"{name}: dataset_dict length = {len(dataset_dict[name])}")
     return DatasetDict(dataset_dict)
