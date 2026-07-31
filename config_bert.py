@@ -6,7 +6,7 @@ import os
 RESOURCES_DIR = "resources"
 SPLITS_DIR = "splits"
 
-DATASET_PATH = os.path.join(RESOURCES_DIR, "nested_relations_dataset_v2.json")
+DATASET_PATH = os.path.join(RESOURCES_DIR, "nested_relations_dataset_small_v2.json")
 SCHEMA_PATH = os.path.join(RESOURCES_DIR, "relation_schema.yml")
 TERMS_PATH = os.path.join(RESOURCES_DIR, "terms.json")
 

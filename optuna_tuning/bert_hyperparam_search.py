@@ -77,7 +77,7 @@ class OptunaHyperparameterSearch:
         trial_lr = trial.suggest_float("learning_rate", 1e-5, 5e-5, log=True)
         trial_batch_size = trial.suggest_categorical("per_device_batch_size", [8, 16, 32, 64])
         trial_weight_decay = trial.suggest_float("weight_decay", 0.0, 0.1)
-        trial_warmup_ratio = trial.suggest_float()
+        trial_warmup_ratio = trial.suggest_float("warmup_ratio", 0.0, 0.1)
     
         print(f"\nModel: {self.model_name} - Trial {trial.number} "
                 f"(lr={trial_lr:.2e}, batch_size={trial_batch_size})")

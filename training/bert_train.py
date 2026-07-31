@@ -9,7 +9,7 @@ def compute_metrics(eval_pred):
     preds = np.argmax(logits, axis=1)
 
     precision, recall, f1, _ = precision_recall_fscore_support(
-        labels, preds, average="macro"
+        labels, preds, average="macro", zero_division=0
     )
     acc = accuracy_score(labels, preds)
 
@@ -22,7 +22,7 @@ def compute_metrics(eval_pred):
 
 def build_trainer(classifier, tokenizer, tokenized_datasets, *, output_dir, epochs, train_batch_size,
                   eval_batch_size, learning_rate, weight_decay, warmup_ratio, logging_steps, metric_for_best_model,
-                  greater_is_better):
+                  greater_is_better, callbacks=None):
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
     training_args = TrainingArguments(
@@ -49,4 +49,5 @@ def build_trainer(classifier, tokenizer, tokenized_datasets, *, output_dir, epoc
         eval_dataset=tokenized_datasets["validation"],
         data_collator=data_collator,
         compute_metrics=compute_metrics,
+        callbacks=callbacks,
     )
