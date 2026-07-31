@@ -9,11 +9,12 @@ from transformers import TrainerCallback
  
 import config_t5
 from data.t5_dataset import load_and_prepare_datasets
+from data.utils import prepare_data_splits
 from metrics.evaluate import make_compute_metrics
 from training.t5_model import load_tokenizer_and_model
 from training.t5_train import build_trainer
  
-SEARCH_EPOCHS = 5
+SEARCH_EPOCHS = 10
 
  
 class OptunaPruningCallback(TrainerCallback):
@@ -28,6 +29,7 @@ class OptunaPruningCallback(TrainerCallback):
         if self.trial.should_prune():
             control.should_training_stop = True
         return control
+    
 
 class OptunaHyperparameterSearch:
     def __init__(self, model_name, n_trials, seed=42):
@@ -42,15 +44,20 @@ class OptunaHyperparameterSearch:
         storage_name = f"sqlite:///{self.safe_model_name}_optuna_study.db"
 
         self.tokenizer, _ = load_tokenizer_and_model(self.model_name)
+
+        splits, split_paths = prepare_data_splits(
+                config_t5.DATASET_PATH,
+                config_t5.SPLITS_DIR,
+                config_t5.SEED,
+                config_t5.TRAIN_FRAC,
+                config_t5.VAL_FRAC
+            )
  
         self.tokenized_datasets = load_and_prepare_datasets(
-            config_t5.DATASET_PATH,
+            split_paths,
             self.tokenizer,
             config_t5.TASK_PREFIX,
             config_t5.MAX_LENGTH,
-            config_t5.SEED,
-            config_t5.TRAIN_FRAC,
-            config_t5.VAL_FRAC,
         )
  
         self.compute_metrics = make_compute_metrics(
@@ -73,9 +80,12 @@ class OptunaHyperparameterSearch:
             load_if_exists=True
         )
 
+
     def objective(self, trial):
         trial_lr = trial.suggest_float("learning_rate", 1e-5, 5e-4, log=True)
         trial_batch_size = trial.suggest_categorical("per_device_batch_size", [4, 8, 16, 32])
+        trial_weight_decay = trial.suggest_float("weight_decay", 0.0, 0.1)
+        trial_warmup_ratio = trial.suggest_float("warmup_ratio", 0.0, 0.1)
  
         print(f"\nModel: {self.model_name} - Trial {trial.number} "
               f"(lr={trial_lr:.2e}, batch_size={trial_batch_size})")
@@ -91,9 +101,11 @@ class OptunaHyperparameterSearch:
                 self.compute_metrics,
                 output_dir=config_t5.OUTPUT_DIR,
                 learning_rate=trial_lr,
+                weight_decay=trial_weight_decay,
+                warmup_ratio=trial_warmup_ratio,
                 train_batch_size=trial_batch_size,
                 eval_batch_size=trial_batch_size,
-                num_epochs=config_t5.NUM_EPOCHS,
+                num_epochs=SEARCH_EPOCHS,
                 generation_max_length=config_t5.GENERATION_MAX_LENGTH,
                 logging_steps=config_t5.LOGGING_STEPS,
                 metric_for_best_model=config_t5.METRIC_FOR_BEST_MODEL,
@@ -109,6 +121,7 @@ class OptunaHyperparameterSearch:
             raise optuna.TrialPruned()
 
         return eval_metrics[self.metric_key]
+
     
     def run_search(self):
         print(f"\n{'='*80}")
@@ -125,6 +138,7 @@ class OptunaHyperparameterSearch:
         )
 
         self.save_results()
+
 
     def save_results(self):
         study_stats = {
@@ -166,5 +180,5 @@ if __name__ == '__main__':
     ]
 
     for model in MODELS:
-        searcher = OptunaHyperparameterSearch(model, n_trials=10)
+        searcher = OptunaHyperparameterSearch(model, n_trials=40)
         searcher.run_search()

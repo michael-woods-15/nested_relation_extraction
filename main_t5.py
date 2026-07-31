@@ -42,6 +42,8 @@ def main():
         compute_metrics,
         output_dir=config.OUTPUT_DIR,
         learning_rate=config.LEARNING_RATE,
+        weight_decay=config.WEIGHT_DECAY,
+        warmup_ratio=config.WARMUP_RATIO,
         train_batch_size=config.TRAIN_BATCH_SIZE,
         eval_batch_size=config.EVAL_BATCH_SIZE,
         num_epochs=config.NUM_EPOCHS,

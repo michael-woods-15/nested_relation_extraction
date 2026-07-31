@@ -16,9 +16,9 @@ def select_precision():
     return {"bf16": False, "fp16": False}
  
  
-def build_trainer(model, tokenizer, tokenized_datasets, compute_metrics, *, output_dir, learning_rate, train_batch_size,
-    eval_batch_size, num_epochs, generation_max_length, logging_steps, metric_for_best_model, greater_is_better, 
-    bf16=None, fp16=None, callbacks=None):
+def build_trainer(model, tokenizer, tokenized_datasets, compute_metrics, *, output_dir, learning_rate, weight_decay,
+                  warmup_ratio, train_batch_size, eval_batch_size, num_epochs, generation_max_length, logging_steps, 
+                  metric_for_best_model, greater_is_better, bf16=None, fp16=None, callbacks=None):
     
     if bf16 is None and fp16 is None:
         precision = select_precision()
@@ -34,6 +34,8 @@ def build_trainer(model, tokenizer, tokenized_datasets, compute_metrics, *, outp
         eval_strategy="epoch",
         save_strategy="epoch",
         learning_rate=learning_rate,
+        weight_decay=weight_decay,
+        warmup_ratio=warmup_ratio,
         per_device_train_batch_size=train_batch_size,
         per_device_eval_batch_size=eval_batch_size,
         num_train_epochs=num_epochs,

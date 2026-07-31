@@ -26,6 +26,8 @@ VAL_FRAC = 0.9     # cumulative fraction: train+val, remainder is test
 # --- Training hyperparameters -----------------------------------------------
 OUTPUT_DIR = "./t5-relation-extraction"
 LEARNING_RATE = 3e-4
+WEIGHT_DECAY = 0.01
+WARMUP_RATIO = 0.1
 TRAIN_BATCH_SIZE = 16
 EVAL_BATCH_SIZE = 16
 NUM_EPOCHS = 10
