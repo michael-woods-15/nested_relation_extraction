@@ -1,4 +1,3 @@
-import torch
 from transformers import DataCollatorWithPadding, TrainingArguments, Trainer
 from sklearn.metrics import precision_recall_fscore_support, accuracy_score
 import numpy as np
@@ -36,7 +35,6 @@ def build_trainer(classifier, tokenizer, tokenized_datasets, *, output_dir, epoc
         weight_decay=weight_decay,
         warmup_ratio=warmup_ratio,
         logging_steps=logging_steps,
-        report_to='none',
         load_best_model_at_end=True,
         metric_for_best_model=metric_for_best_model,
         greater_is_better=greater_is_better,

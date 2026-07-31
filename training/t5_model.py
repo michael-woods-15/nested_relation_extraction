@@ -1,4 +1,3 @@
-import torch
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 from training.utils import get_device
  
