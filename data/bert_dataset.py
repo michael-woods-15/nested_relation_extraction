@@ -39,7 +39,7 @@ def make_hf_dataset(examples):
     })
 
 
-def tokenize_dataset(dataset, tokenizer, label2id, max_length=256):
+def tokenize_dataset(dataset, tokenizer, label2id, max_length=512):
     """Tokenize a raw (text, label) `Dataset` for classification training.
 
     Converts string labels to ints via `label2id`, leaving padding to the

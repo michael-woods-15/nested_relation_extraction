@@ -23,6 +23,13 @@ class Node:
         tag = self.label.upper()
         return f"[{tag}]{inner}[/{tag}]"
 
+    def output_text(self):
+        if self.kind == 'entity':
+            return self.label
+        else:
+            inner = ", ". join(f"{a}={c.output_text()}" for a, c in self.children)
+            return f"{self.label}({inner})"
+
 
 def parse_relation(rel):
     """Recursively build a `Node` tree from the nested relation-json structure."""
