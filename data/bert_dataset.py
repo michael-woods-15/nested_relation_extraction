@@ -49,11 +49,21 @@ def tokenize_dataset(dataset, tokenizer, label2id, max_length=512):
     def preprocess_function(batch):
         encodings = tokenizer(
             batch["text"],
-            truncation=True,
-            max_length=max_length,
+            truncation=False,
         )
-        encodings["labels"] = [label2id[label] for label in batch["label"]]
-        return encodings
+    
+        keep_indices = [
+            i for i, ids in enumerate(encodings["input_ids"])
+            if len(ids) <= max_length
+        ]
+    
+        filtered = {
+            key: [values[i] for i in keep_indices]
+            for key, values in encodings.items()
+        }
+        filtered["labels"] = [label2id[batch["label"][i]] for i in keep_indices]
+    
+        return filtered
 
     return dataset.map(
         preprocess_function,

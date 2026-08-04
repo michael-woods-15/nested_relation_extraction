@@ -1,4 +1,5 @@
 import itertools
+import torch
 
 from data.bert_data_creation import Node, render_context_segment, compute_levels
 
@@ -36,10 +37,12 @@ def predict_relation(text, model, tokenizer, id2label, device, max_length=512):
     inputs = tokenizer(
         text,
         return_tensors="pt",
-        truncation=True,
-        max_length=max_length,
         padding=True,
     ).to(device)
+
+    seq_len = inputs["input_ids"].shape[1]
+    if seq_len > max_length:
+        return 'none'
 
     with torch.no_grad():
         logits = model(**inputs).logits
