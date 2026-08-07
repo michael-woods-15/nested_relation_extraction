@@ -10,7 +10,7 @@ from transformers import TrainerCallback
 import config_t5
 from data.t5_dataset import load_and_prepare_datasets
 from data.utils import prepare_data_splits
-from metrics.evaluate import make_compute_metrics
+from metrics.eval_metrics import make_compute_metrics
 from training.t5_model import load_tokenizer_and_model
 from training.t5_train import build_trainer
  
