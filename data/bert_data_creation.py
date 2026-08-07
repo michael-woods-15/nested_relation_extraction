@@ -25,7 +25,7 @@ class Node:
 
     def output_text(self):
         if self.kind == 'entity':
-            return self.label
+            return f"[QUOTE]{self.label}[QUOTE]"
         else:
             inner = ", ". join(f"{a}={c.output_text()}" for a, c in self.children)
             return f"{self.label}({inner})"
