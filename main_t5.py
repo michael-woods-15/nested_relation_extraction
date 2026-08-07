@@ -6,6 +6,7 @@ import config_t5 as config
 from data.t5_dataset import load_and_prepare_datasets
 from data.utils import prepare_data_splits
 from metrics.evaluate import make_compute_metrics
+from metrics.schema_checker import load_relation_schema, load_terms
 from training.t5_model import load_tokenizer_and_model
 from training.t5_train import build_trainer
  
@@ -27,11 +28,14 @@ def main():
         config.TASK_PREFIX,
         config.MAX_LENGTH,
     )
+
+    relation_schema = load_relation_schema(config.SCHEMA_PATH)
+    terms = load_terms(config.TERMS_PATH)
  
     compute_metrics = make_compute_metrics(
         tokenizer,
-        config.SCHEMA_PATH,
-        config.TERMS_PATH,
+        relation_schema,
+        terms,
         config.ROOT_LABELS,
     )
  
