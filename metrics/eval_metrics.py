@@ -4,6 +4,60 @@ from metrics.bin_decomp import get_bin_rels, get_parse_fail_FN, binary_decomposi
 from metrics.parser import parse_tree
 from metrics.schema_checker import validate_predicate
 from metrics.ted import mean_norm_tree_edit_distance
+
+def evaluate_bert(preds, targets, relation_schema, terms, root_labels):
+    """
+    Parse, validate, and score a batch of predicted string lists vs. target strings.
+        
+    Returns a dict with `parse_rate`, `schema_rate` and the binary decomposition
+    precision/recall/F1.
+    """
+    n = 0
+    valid_parse_count = 0
+    valid_schema_count = 0
+
+    valid_preds = []
+    valid_targets = []
+    invalid_parse_targets = []
+
+    for p, t in zip(preds, targets):
+        parsed_target, _ = parse_tree(t)
+        parsed_target = parsed_target.children[0]
+
+        valid_parses = []
+        n += len(p)
+        for pred in p:
+            parsed_pred, err = parse_tree(pred)
+            if err is None:
+                parsed_pred = parsed_pred.children[0]
+                valid_parse_count += 1
+    
+                #Schema check
+                ok, err = validate_predicate(parsed_pred, root_labels, relation_schema, terms)
+                if ok:
+                    valid_schema_count += 1
+
+                valid_parses.append(parsed_pred)
+
+        if valid_parses:
+            valid_preds.append(valid_parses)
+            valid_targets.append(parsed_target)
+        else:
+            invalid_parse_targets.append(parsed_target)
+
+    parse_rate = valid_parse_count / n
+    schema_rate = valid_schema_count / n
+
+    pred_bin_rels, target_bin_rels = get_bin_rels(valid_preds, valid_targets)
+    parse_fail_FN = get_parse_fail_FN(invalid_parse_targets)
+    bin_decomp_metrics = binary_decomposition_metrics(pred_bin_rels, target_bin_rels, parse_fail_FN)
+
+    return {
+        "parse_rate": parse_rate,
+        "schema_rate": schema_rate,
+        **bin_decomp_metrics,
+
+    }        
  
 
 def evaluate_t5(preds, targets, relation_schema, terms, root_labels):

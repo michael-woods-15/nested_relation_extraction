@@ -1,7 +1,8 @@
 import itertools
 import torch
 
-from data.bert_data_creation import Node, render_context_segment, compute_levels
+from data.bert_data_creation import Node, render_context_segment
+from metrics.eval_metrics import evaluate_bert
 
 
 single_arg_names = {
@@ -132,20 +133,13 @@ def bert_multipass_inference(sentence, entities, model, tokenizer, id2label, dev
 
         counter += 1
 
-    max_level = -1
-    max_level_node = None
-    for node in discovered:
-        level = compute_levels(node)
-        if level > max_level:
-            max_level = level
-            max_level_node = node
+    output = [node.output_text() for node in discovered if node.kind == 'relation']
+    return output
 
 
-    return max_level_node
-
-
-def multipass_inference(relations, model, tokenizer, id2label, device, verbose=False):
-    results = []
+def bert_multipass_eval(relations, model, tokenizer, id2label, relation_schema, terms, root_labels, device, verbose=False):
+    preds = []
+    targets = []
 
     for rel in relations:
         output = bert_multipass_inference(
@@ -158,6 +152,9 @@ def multipass_inference(relations, model, tokenizer, id2label, device, verbose=F
             verbose=verbose
         )
 
-        results.append(output)
+        preds.append(output)
+        targets.append(rel['relation_text'])
+
+    results = evaluate_bert(preds, targets, relation_schema, terms, root_labels)
 
     return results
