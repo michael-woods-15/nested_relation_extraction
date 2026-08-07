@@ -49,6 +49,11 @@ def main():
     trainer.train()
     output = trainer.evaluate()
 
+    os.makedirs("model_weights", exist_ok=True)
+    safe_model_name = config.MODEL_NAME.replace("/", "-")
+    trainer.save_model(f"model_weights/{safe_model_name}")
+    tokenizer.save_pretrained(f"model_weights/{safe_model_name}")
+
     os.makedirs("results", exist_ok=True)
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     with open(f"results/{config.MODEL_NAME}_{timestamp}.json", "w") as f:

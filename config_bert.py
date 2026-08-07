@@ -21,9 +21,9 @@ VAL_FRAC = 0.9     # cumulative fraction: train+val, remainder is test
 
 # --- Training hyperparameters -----------------------------------------------
 OUTPUT_DIR = "./bert-relation-extraction"
-LEARNING_RATE = 2e-5
-WEIGHT_DECAY = 0.01
-WARMUP_RATIO = 0.1
+LEARNING_RATE = 0.000020352924566238613
+WEIGHT_DECAY = 0.08510414849137875
+WARMUP_RATIO = 0.09644252609883643
 TRAIN_BATCH_SIZE = 64
 EVAL_BATCH_SIZE = 64
 NUM_EPOCHS = 10
